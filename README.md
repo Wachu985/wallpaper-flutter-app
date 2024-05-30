@@ -12,7 +12,8 @@ Aplicacion para la visualizacion de fondos de pantalla y establecimiento del mis
 </div>
 
 ## Descripción
-### WallpaperGo: ¡Tu fondo de pantalla ideal a solo un toque!
+
+### WallpaperGo: ¡Tu fondo de pantalla ideal a solo un toque
 
 ¿Buscas un fondo de pantalla que refleje tu estilo único? ¡Con **WallpaperGo** lo encuentras en un instante!
 
