@@ -14,10 +14,10 @@ class DioRemoteDatasource implements RemoteDatasource {
   final Dio _client;
 
   @override
-  Future<Request> getCurated() async {
+  Future<Request> getCurated(int page) async {
     try {
       final response = await _client.get(
-          'https://api.pexels.com/v1/curated?per_page=80',
+          'https://api.pexels.com/v1/curated?page=$page&per_page=30',
           options:
               Options(headers: {"Authorization": EnvironmentConfig.apiUrl}));
       if (response.statusCode == 200) {
@@ -34,7 +34,7 @@ class DioRemoteDatasource implements RemoteDatasource {
   Future<Request> searchPhoto(String search) async {
     try {
       final response = await _client.get(
-          'https://api.pexels.com/v1/search?query=$search&per_page=80',
+          'https://api.pexels.com/v1/search?query=$search&per_page=100',
           options:
               Options(headers: {"Authorization": EnvironmentConfig.apiUrl}));
       if (response.statusCode == 200) {

@@ -1,7 +1,7 @@
 part of 'wallpaper_bloc.dart';
 
 abstract class WallpaperEvent {
-  factory WallpaperEvent.chargeCurated() => const _ChargeCurated();
+  factory WallpaperEvent.chargeCurated({int page = 1}) => _ChargeCurated(page);
   factory WallpaperEvent.initialAllEvent() => const _InitialAllEvent();
   factory WallpaperEvent.changeShow({required bool showElements}) =>
       _ChangeShow(showElements: showElements);
@@ -15,10 +15,15 @@ abstract class WallpaperEvent {
       _SearchEvent(search: search);
   factory WallpaperEvent.changeOption({required int option}) =>
       _ChangeOption(option: option);
+
+  factory WallpaperEvent.loadFavorites() => const _LoadFavorites();
+  factory WallpaperEvent.toogleFavorite({required Photo photo}) =>
+      _ToogleFavorite(photo: photo);
 }
 
 class _ChargeCurated implements WallpaperEvent {
-  const _ChargeCurated();
+  final int page;
+  const _ChargeCurated(this.page);
 }
 
 class _InitialAllEvent implements WallpaperEvent {
@@ -53,4 +58,13 @@ class _ChangeOption implements WallpaperEvent {
 class _ChangeShow implements WallpaperEvent {
   const _ChangeShow({required this.showElements});
   final bool showElements;
+}
+
+class _LoadFavorites implements WallpaperEvent {
+  const _LoadFavorites();
+}
+
+class _ToogleFavorite implements WallpaperEvent {
+  final Photo photo;
+  const _ToogleFavorite({required this.photo});
 }

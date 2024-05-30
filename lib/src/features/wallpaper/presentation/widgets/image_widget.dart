@@ -1,8 +1,10 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wallpaper_app/src/features/wallpaper/presentation/bloc/wallpaper_bloc.dart';
+import 'package:wallpaper_app/src/features/wallpaper/presentation/widgets/gradient_box.dart';
 
 import '../../domain/entities/photo.dart';
 import '../screens/wallpaper_screen.dart';
@@ -26,19 +28,66 @@ class ImageWidget extends StatelessWidget {
                 builder: (context) => const WallpaperScreen(),
               ));
         },
-        child: Container(
+        child: Card(
           margin: const EdgeInsets.all(5),
-          height: index % 2 == 0 ? 300 : 350,
-          decoration: BoxDecoration(
-              color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: FadeInImage(
-                fit: BoxFit.cover,
-                imageErrorBuilder: (context, error, stackTrace) =>
-                    Image.asset('assets/no-image.jpg'),
-                placeholder: const AssetImage('assets/no-image.jpg'),
-                image: NetworkImage(photo.src.portrait)),
+          elevation: 5,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Container(
+            height: index % 2 == 0 ? 300 : 350,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: CachedNetworkImage(
+                    imageUrl: photo.src.portrait ?? '',
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        Image.asset('assets/no-image.jpg', fit: BoxFit.cover),
+                    errorWidget: (context, url, error) =>
+                        Image.asset('assets/no-image.jpg', fit: BoxFit.cover),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: const GradientBox(
+                    colors: [Colors.transparent, Colors.black87],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0.0, 0.95],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FutureBuilder<bool>(
+                      future:
+                          context.read<WallpaperBloc>().isFavorite(photo.id),
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) {
+                          return const CircularProgressIndicator(
+                              strokeWidth: 2);
+                        } else {
+                          return IconButton(
+                              onPressed: () => context
+                                  .read<WallpaperBloc>()
+                                  .add(WallpaperEvent.toogleFavorite(
+                                      photo: photo)),
+                              icon: Icon(
+                                snapshot.data!
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_outline_rounded,
+                                color:
+                                    snapshot.data! ? Colors.red : Colors.white,
+                              ));
+                        }
+                      }),
+                )
+              ],
+            ),
           ),
         ),
       ),

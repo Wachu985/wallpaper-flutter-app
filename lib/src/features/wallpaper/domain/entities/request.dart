@@ -1,8 +1,6 @@
-import 'package:equatable/equatable.dart';
-
 import 'photo.dart';
 
-abstract class Request extends Equatable {
+abstract class Request {
   final int totalResults;
   final int page;
   final int perPage;
@@ -16,7 +14,4 @@ abstract class Request extends Equatable {
     required this.photos,
     required this.nextPage,
   });
-
-  @override
-  List<Object?> get props => [totalResults, page, perPage, photos, nextPage];
 }

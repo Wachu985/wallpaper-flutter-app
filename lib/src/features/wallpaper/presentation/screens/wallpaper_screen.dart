@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:wallpaper_app/generated/l10n.dart';
+import 'package:wallpaper_app/src/features/wallpaper/presentation/widgets/gradient_box.dart';
 
 import '../bloc/wallpaper_bloc.dart';
 
@@ -9,10 +11,11 @@ class WallpaperScreen extends StatelessWidget {
   const WallpaperScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final textTraslate = S.of(context);
     final List<String> menuOptions = [
-      'Pantalla Principal',
-      'Pantalla de Bloqueo',
-      'Ambas Pantallas',
+      textTraslate.wallpaperOption1,
+      textTraslate.wallpaperOption2,
+      textTraslate.wallpaperOption3,
     ];
     return BlocListener<WallpaperBloc, WallpaperState>(
       listenWhen: (previous, current) {
@@ -32,7 +35,7 @@ class WallpaperScreen extends StatelessWidget {
       listener: (context, state) {
         if (state.isDownload) {
           Fluttertoast.showToast(
-              msg: "Imagen Descargada Correctamente",
+              msg: textTraslate.toastSuccess,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -43,7 +46,7 @@ class WallpaperScreen extends StatelessWidget {
               .add(WallpaperEvent.initialAllEvent());
         } else if (state.isDError) {
           Fluttertoast.showToast(
-              msg: "Error al Descargar la Imagen",
+              msg: textTraslate.toastError,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -54,7 +57,7 @@ class WallpaperScreen extends StatelessWidget {
               .add(WallpaperEvent.initialAllEvent());
         } else if (state.isBSuccess) {
           Fluttertoast.showToast(
-              msg: "Fondo de Pantalla Establecido Correctamente",
+              msg: textTraslate.toastWallpaperSuccess,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -81,12 +84,27 @@ class WallpaperScreen extends StatelessWidget {
           return Scaffold(
               body: Stack(
             children: [
-              FadeInImage(
-                  fit: BoxFit.cover,
-                  height: double.infinity,
-                  width: double.infinity,
-                  placeholder: const AssetImage('assets/no-image.jpg'),
-                  image: NetworkImage(state.photo!.src.portrait)),
+              CachedNetworkImage(
+                imageUrl: state.photo!.src.portrait ?? '',
+                height: double.infinity,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Image.asset('assets/no-image.jpg', fit: BoxFit.cover),
+                errorWidget: (context, url, error) =>
+                    Image.asset('assets/no-image.jpg', fit: BoxFit.cover),
+              ),
+              const GradientBox(
+                colors: [Colors.black87, Colors.transparent],
+                begin: Alignment.topLeft,
+                stops: [0.0, 0.3],
+              ),
+              const GradientBox(
+                colors: [Colors.black87, Colors.transparent],
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [0.0, 0.4],
+              ),
               AppBar(
                 titleTextStyle: const TextStyle(fontSize: 15),
                 iconTheme: const IconThemeData(color: Colors.white),
@@ -105,8 +123,7 @@ class WallpaperScreen extends StatelessWidget {
                         return BlocBuilder<WallpaperBloc, WallpaperState>(
                           builder: (context, state) {
                             return AlertDialog(
-                              title: const Text(
-                                  'Selecciona donde desea el Fondo:'),
+                              title: Text(textTraslate.alertDialogText),
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
@@ -130,17 +147,17 @@ class WallpaperScreen extends StatelessWidget {
                               ),
                               actions: <Widget>[
                                 TextButton(
-                                  child: const Text('Cancelar'),
+                                  child: Text(textTraslate.alertDialogNot),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                 ),
                                 TextButton(
-                                  child: const Text('Aceptar'),
+                                  child: Text(textTraslate.alertDialogOk),
                                   onPressed: () {
                                     BlocProvider.of<WallpaperBloc>(context)
                                         .add(WallpaperEvent.setWallpaperEvent(
-                                      url: state.photo!.src.portrait,
+                                      url: state.photo!.src.portrait ?? '',
                                     ));
                                     Navigator.of(context).pop();
                                   },
@@ -164,9 +181,11 @@ class WallpaperScreen extends StatelessWidget {
                 child: FloatingActionButton(
                   onPressed: () async {
                     final provider = BlocProvider.of<WallpaperBloc>(context);
-                    if (await Permission.storage.request().isGranted) {
+                    if (await context
+                        .read<WallpaperBloc>()
+                        .getStoragePermission()) {
                       provider.add(WallpaperEvent.downloadImage(
-                          url: state.photo!.src.portrait));
+                          url: state.photo!.src.portrait ?? ''));
                     }
                   },
                   heroTag: '2',
@@ -174,7 +193,7 @@ class WallpaperScreen extends StatelessWidget {
                       ? const CircularProgressIndicator()
                       : const Icon(Icons.download),
                 ),
-              )
+              ),
             ],
           ));
         },

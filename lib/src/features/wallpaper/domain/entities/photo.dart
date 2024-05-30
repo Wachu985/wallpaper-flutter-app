@@ -1,8 +1,6 @@
-import 'package:equatable/equatable.dart';
-
 import 'src.dart';
 
-abstract class Photo extends Equatable {
+abstract class Photo {
   final int id;
   final int width;
   final int height;
@@ -28,19 +26,4 @@ abstract class Photo extends Equatable {
     required this.liked,
     required this.alt,
   });
-
-  @override
-  List<Object?> get props => [
-        id,
-        width,
-        height,
-        url,
-        photographer,
-        photographerUrl,
-        photographerId,
-        avgColor,
-        src,
-        liked,
-        alt
-      ];
 }

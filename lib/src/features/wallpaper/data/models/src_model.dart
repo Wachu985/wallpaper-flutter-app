@@ -1,44 +1,43 @@
-import '../../domain/entities/src.dart';
+import 'package:isar/isar.dart';
 
+import '../../domain/entities/src.dart';
+part 'src_model.g.dart';
+
+@embedded
 class SrcModel implements Src {
   const SrcModel(
-      {required this.landscape,
-      required this.large,
-      required this.large2X,
-      required this.medium,
-      required this.original,
-      required this.portrait,
-      required this.small,
-      required this.tiny});
+      {this.landscape,
+      this.large,
+      this.large2X,
+      this.medium,
+      this.original,
+      this.portrait,
+      this.small,
+      this.tiny});
   @override
-  final String landscape;
+  final String? landscape;
 
   @override
-  final String large;
+  final String? large;
 
   @override
-  final String large2X;
+  final String? large2X;
 
   @override
-  final String medium;
+  final String? medium;
 
   @override
-  final String original;
+  final String? original;
 
   @override
-  final String portrait;
+  final String? portrait;
 
   @override
-  final String tiny;
+  final String? tiny;
 
   @override
-  final String small;
-  @override
-  List<Object?> get props =>
-      [landscape, large, large2X, medium, original, portrait, small, tiny];
-
-  @override
-  bool? get stringify => false;
+  final String? small;
+  
 
   factory SrcModel.fromJson(Map<String, dynamic> json) => SrcModel(
         original: json["original"],

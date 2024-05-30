@@ -9,6 +9,6 @@ class GetCurated {
       : _repository = repository;
   final WallpaperRepository _repository;
 
-  Future<Either<Failure, Request>> call() async =>
-      await _repository.getCurated();
+  Future<Either<Failure, Request>> call({int page = 1}) async =>
+      await _repository.getCurated(page);
 }

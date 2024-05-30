@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:wallpaper_app/generated/l10n.dart';
 
 import '../../../../core/errors/exception.dart';
 import '../../../../core/errors/failure.dart';
@@ -16,16 +17,16 @@ class WallpaperRepositoryImpl implements WallpaperRepository {
   final NetworkInfo _connection;
 
   @override
-  Future<Either<Failure, Request>> getCurated() async {
+  Future<Either<Failure, Request>> getCurated(int page) async {
     if (await _connection.isConnected) {
       try {
-        final response = await _datasource.getCurated();
+        final response = await _datasource.getCurated(page);
         return Right(response);
       } on NetworkException {
-        return const Left(NetworkFailure(message: 'Error de Conexion'));
+        return Left(NetworkFailure(message: S.current.conectionError));
       }
     } else {
-      return const Left(NetworkFailure(message: 'Error de Conexion'));
+      return Left(NetworkFailure(message: S.current.conectionError));
     }
   }
 
@@ -36,10 +37,10 @@ class WallpaperRepositoryImpl implements WallpaperRepository {
         final response = await _datasource.searchPhoto(search);
         return Right(response);
       } on NetworkException {
-        return const Left(NetworkFailure(message: 'Error de Conexion'));
+        return Left(NetworkFailure(message: S.current.conectionError));
       }
     } else {
-      return const Left(NetworkFailure(message: 'Error de Conexion'));
+      return Left(NetworkFailure(message: S.current.conectionError));
     }
   }
 
@@ -51,12 +52,12 @@ class WallpaperRepositoryImpl implements WallpaperRepository {
 
         return Right(filename);
       } on NetworkException {
-        return const Left(NetworkFailure(message: 'Error de Conexion'));
+        return Left(NetworkFailure(message: S.current.conectionError));
       } catch (e) {
-        return const Left(NetworkFailure(message: 'Error de Conexion'));
+        return Left(NetworkFailure(message: S.current.conectionError));
       }
     } else {
-      return const Left(NetworkFailure(message: 'Error de Conexion'));
+      return Left(NetworkFailure(message: S.current.conectionError));
     }
   }
 }

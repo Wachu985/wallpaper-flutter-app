@@ -4,7 +4,7 @@ import 'package:wallpaper_app/src/features/wallpaper/domain/entities/request.dar
 import '../../../../core/errors/failure.dart';
 
 abstract class WallpaperRepository {
-  Future<Either<Failure, Request>> getCurated();
+  Future<Either<Failure, Request>> getCurated(int page);
   Future<Either<Failure, Request>> searchPhoto(String search);
   Future<Either<Failure, String>> downloadImage(String url);
 }

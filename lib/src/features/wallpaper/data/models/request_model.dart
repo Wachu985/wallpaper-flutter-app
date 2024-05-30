@@ -24,12 +24,6 @@ class RequestModel implements Request {
   @override
   final int totalResults;
 
-  @override
-  List<Object?> get props => [nextPage, page, perPage, photos, totalResults];
-
-  @override
-  bool? get stringify => false;
-
   factory RequestModel.fromJson(Map<String, dynamic> json) => RequestModel(
         totalResults: json["total_results"] ?? 0,
         page: json["page"],

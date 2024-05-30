@@ -1,6 +1,10 @@
+import 'package:isar/isar.dart';
+
 import '../../domain/entities/photo.dart';
 import 'src_model.dart';
+part 'photo_model.g.dart';
 
+@collection
 class PhotoModel implements Photo {
   const PhotoModel(
       {required this.alt,
@@ -24,7 +28,7 @@ class PhotoModel implements Photo {
   final int height;
 
   @override
-  final int id;
+  final Id id;
 
   @override
   final bool liked;
@@ -46,24 +50,6 @@ class PhotoModel implements Photo {
 
   @override
   final int width;
-
-  @override
-  bool? get stringify => false;
-
-  @override
-  List<Object?> get props => [
-        alt,
-        avgColor,
-        height,
-        id,
-        liked,
-        photographer,
-        photographerId,
-        photographerUrl,
-        src,
-        url,
-        width
-      ];
 
   factory PhotoModel.fromJson(Map<String, dynamic> json) => PhotoModel(
         id: json["id"],
